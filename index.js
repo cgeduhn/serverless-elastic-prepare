@@ -1,4 +1,5 @@
 'use strict';
+const { Client } = require('@elastic/elasticsearch')
 
 class ElasticPrepare {
   constructor(serverless, options) {
@@ -22,8 +23,10 @@ class ElasticPrepare {
 
 
   async initElastic(offline = false){
+    this.serverless.cli.log('Prepare Elastic Indices...');
+
     const _host = this.serverless.service.custom.elastic.endpoint
-    const { Client } = require('@elastic/elasticsearch')
+    
 
     const offline_host = this.serverless.service.custom.elastic.offline_host || "http://localhost:9200"
     const host = offline ? offline_host : _host
@@ -33,6 +36,8 @@ class ElasticPrepare {
     if (this.serverless.service.custom.elastic.indices) {
       await this.serverless.service.custom.elastic.indices.forEach(async element => {
         const {index, mapping} = element
+
+        this.serverless.cli.log(`Current Index: ${index}`);
 
         const exist = await client.indices.exists({index})
 
