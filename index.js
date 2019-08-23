@@ -6,16 +6,16 @@ class ElasticPrepare {
     this.serverless = serverless;
     this.options = options;
     this.hooks = {
-      'aws:deploy:finalize:cleanup': this.initElastic.bind(this, false),
-      'init:elastic': this.initElastic.bind(this, false),
+      'after:deploy:deploy': () => this.serverless.pluginManager.run(['initElastic']),
+      'initElastic:setup': this.initElastic.bind(this, false),
       'before:offline:start': this.initElastic.bind(this, true),
       'before:offline:start:init': this.initElastic.bind(this, true)
     };
     this.commands = {
-      "init:elastic": {
+      "initElastic": {
         usage: 'Create or update the indices',
         lifecycleEvents: [
-          'create',
+          'setup',
         ]
       },
     }
