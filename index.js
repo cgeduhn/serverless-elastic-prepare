@@ -34,7 +34,7 @@ class ElasticPrepare {
     const client = new Client({ node: host })
 
     if (this.serverless.service.custom.elastic.indices) {
-      await this.serverless.service.custom.elastic.indices.forEach(async element => {
+      await Promise.all(this.serverless.service.custom.elastic.indices.map(async element => {
         const {index, mapping} = element
 
         this.serverless.cli.log(`Current Index: ${index}`);
@@ -50,7 +50,7 @@ class ElasticPrepare {
           body: mapping
         })
         
-      });
+      }));
     };
   }
 
